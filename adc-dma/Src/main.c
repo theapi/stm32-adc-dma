@@ -53,6 +53,7 @@
 
 /* Variable containing ADC conversions data */
 static uint16_t   aADCxConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
+static uint16_t avg;
 
 /* USER CODE END PV */
 
@@ -124,7 +125,12 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-	  HAL_Delay(500);
+	  HAL_Delay(200);
+	  uint32_t tmpAvg = 0;
+ 	  for (uint16_t i = 0; i < ADC_CONVERTED_DATA_BUFFER_SIZE; i++) {
+ 		 tmpAvg += aADCxConvertedData[i];
+	  }
+ 	  avg = tmpAvg / ADC_CONVERTED_DATA_BUFFER_SIZE;
   }
   /* USER CODE END 3 */
 }

@@ -2,9 +2,10 @@
 ADC.ClockPrescaler=ADC_CLOCK_SYNC_PCLK_DIV2
 ADC.ContinuousConvMode=ENABLE
 ADC.DMAContinuousRequests=ENABLE
-ADC.IPParameters=ClockPrescaler,ContinuousConvMode,Overrun,SamplingTime,DMAContinuousRequests
+ADC.IPParameters=ClockPrescaler,ContinuousConvMode,Overrun,SamplingTime,DMAContinuousRequests,Resolution
 ADC.Overrun=ADC_OVR_DATA_OVERWRITTEN
-ADC.SamplingTime=ADC_SAMPLETIME_7CYCLES_5
+ADC.Resolution=ADC_RESOLUTION_12B
+ADC.SamplingTime=ADC_SAMPLETIME_12CYCLES_5
 Dma.ADC.0.Direction=DMA_PERIPH_TO_MEMORY
 Dma.ADC.0.Instance=DMA1_Channel1
 Dma.ADC.0.MemDataAlignment=DMA_MDATAALIGN_HALFWORD

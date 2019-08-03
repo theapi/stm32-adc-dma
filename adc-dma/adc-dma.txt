@@ -1,6 +1,6 @@
 Configuration	adc-dma
 STM32CubeMX 	5.3.0
-Date	08/01/2019
+Date	08/03/2019
 MCU	STM32L031F4Px
 
 
@@ -30,7 +30,7 @@ SOFTWARE PROJECT
 
 Project Settings : 
 Project Name : adc-dma
-Project Folder : /home/peter/STM32CubeIDE/workspace_1.0.2/adc-dma
+Project Folder : /home/peter/repos/stm32-adc-dma/adc-dma
 Toolchain / IDE : STM32CubeIDE
 Firmware Package Name and Version : STM32Cube FW_L0 V1.11.2
 
