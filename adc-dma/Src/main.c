@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "comp.h"
 #include "dma.h"
 #include "gpio.h"
 
@@ -54,6 +55,9 @@
 /* Variable containing ADC conversions data */
 static uint16_t   aADCxConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
 static uint16_t avg;
+/* The comparator sets/resets this variable */
+volatile uint8_t comp = 0;
+
 
 /* USER CODE END PV */
 
@@ -99,12 +103,15 @@ int main(void)
   MX_GPIO_Init();
   MX_DMA_Init();
   MX_ADC_Init();
+  MX_COMP1_Init();
   /* USER CODE BEGIN 2 */
 
   if (HAL_ADCEx_Calibration_Start(&hadc, ADC_SINGLE_ENDED) !=  HAL_OK)
   {
     Error_Handler();
   }
+
+  HAL_COMP_Start(&hcomp1);
 
   /* ### - 4 - Start conversion in DMA mode ################################# */
   if (HAL_ADC_Start_DMA(&hadc,
@@ -174,6 +181,15 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void HAL_COMP_TriggerCallback(COMP_HandleTypeDef *hcomp) {
+	if (HAL_COMP_GetOutputLevel(hcomp)) {
+		comp = 1;
+	} else {
+		comp = 0;
+	}
+}
+
 
 /* USER CODE END 4 */
 
