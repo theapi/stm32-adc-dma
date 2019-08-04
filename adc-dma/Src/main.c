@@ -23,6 +23,7 @@
 #include "adc.h"
 #include "comp.h"
 #include "dma.h"
+#include "tim.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -106,6 +107,8 @@ int main(void)
   MX_DMA_Init();
   MX_ADC_Init();
   MX_COMP1_Init();
+  MX_TIM2_Init();
+  MX_TIM22_Init();
   /* USER CODE BEGIN 2 */
 
   if (HAL_ADCEx_Calibration_Start(&hadc, ADC_SINGLE_ENDED) !=  HAL_OK)
@@ -115,7 +118,11 @@ int main(void)
 
   HAL_COMP_Start(&hcomp1);
 
-  /* ### - 4 - Start conversion in DMA mode ################################# */
+  HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+  HAL_TIM_PWM_Start(&htim22, TIM_CHANNEL_1);
+
+
+  /* Start conversion in DMA mode ################################# */
   if (HAL_ADC_Start_DMA(&hadc,
                         (uint32_t *)aADCxConvertedData,
                         ADC_CONVERTED_DATA_BUFFER_SIZE
@@ -133,8 +140,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
-	  HAL_Delay(200);
+
 
 	  uint32_t tmpAvgPA0 = 0;
 	  uint32_t tmpAvgPA1 = 0;
@@ -150,6 +156,9 @@ int main(void)
 	  // Use the average.
  	  avgPA0 = tmpAvgPA0 / ADC_CHANNEL_BUFFER_SIZE;
  	  avgPA1 = tmpAvgPA1 / ADC_CHANNEL_BUFFER_SIZE;
+
+ 	 htim2.Instance->CCR1 = avgPA0;
+ 	 htim22.Instance->CCR1 = avgPA1;
   }
   /* USER CODE END 3 */
 }
@@ -197,8 +206,10 @@ void SystemClock_Config(void)
 void HAL_COMP_TriggerCallback(COMP_HandleTypeDef *hcomp) {
 	if (HAL_COMP_GetOutputLevel(hcomp)) {
 		comp = 1;
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_SET);
 	} else {
 		comp = 0;
+		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, GPIO_PIN_RESET);
 	}
 }
 
