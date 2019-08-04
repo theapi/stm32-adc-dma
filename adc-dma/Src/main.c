@@ -40,6 +40,7 @@
 
   /* Definition of ADCx conversions data table size */
   #define ADC_CONVERTED_DATA_BUFFER_SIZE   ((uint32_t)  32)   /* Size of array aADCxConvertedData[] */
+  #define ADC_CHANNEL_BUFFER_SIZE          (ADC_CONVERTED_DATA_BUFFER_SIZE / 2) /* Data from 2 channels goe in the buffer */
 
 /* USER CODE END PD */
 
@@ -53,9 +54,10 @@
 /* USER CODE BEGIN PV */
 
 /* Variable containing ADC conversions data */
-static uint16_t   aADCxConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
-static uint16_t avg;
-/* The comparator sets/resets this variable */
+static uint16_t aADCxConvertedData[ADC_CONVERTED_DATA_BUFFER_SIZE];
+static uint16_t avgPA0;
+static uint16_t avgPA1;
+/* The comparator sets/resets this variable when comparing PA0 & PA1 */
 volatile uint8_t comp = 0;
 
 
@@ -133,11 +135,21 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_5);
 	  HAL_Delay(200);
-	  uint32_t tmpAvg = 0;
- 	  for (uint16_t i = 0; i < ADC_CONVERTED_DATA_BUFFER_SIZE; i++) {
- 		 tmpAvg += aADCxConvertedData[i];
+
+	  uint32_t tmpAvgPA0 = 0;
+	  uint32_t tmpAvgPA1 = 0;
+	  uint16_t i = 0;
+	  while (i < ADC_CONVERTED_DATA_BUFFER_SIZE) {
+		  /* PA0 is in the even numbered indexes */
+		  tmpAvgPA0 += aADCxConvertedData[i];
+		  i++;
+		  /* PA1 is in the odd numbered indexes */
+		  tmpAvgPA1 += aADCxConvertedData[i];
+		  i++;
 	  }
- 	  avg = tmpAvg / ADC_CONVERTED_DATA_BUFFER_SIZE;
+	  // Use the average.
+ 	  avgPA0 = tmpAvgPA0 / ADC_CHANNEL_BUFFER_SIZE;
+ 	  avgPA1 = tmpAvgPA1 / ADC_CHANNEL_BUFFER_SIZE;
   }
   /* USER CODE END 3 */
 }
